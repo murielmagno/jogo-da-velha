@@ -36,15 +36,12 @@ public class Campo {
         this.jogador = jogador;
     }
 
-    public String alternarMarcacao() {
-        if (jogador == 1 && !marcado){
+    public void alternarMarcacao() {
             marcado = !marcado;
-            return x;
+    }
 
-        }else if (jogador == 2 && !marcado){
-            marcado = !marcado;
-            return o;
-        }return toString();
+    public boolean getMarcado(){
+        return this.marcado = marcado;
     }
 
     public void reiniciar(){
