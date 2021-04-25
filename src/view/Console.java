@@ -28,24 +28,15 @@ public class Console {
 
     public void adicionarJogador() {
         System.out.println("----------------------");
-        System.out.println("nome do jogador 1 [X]:");
-        nome1 = entrada.next();
-        System.out.println("Quem vai ser o Jogador 1 [X] ?");
+        System.out.println("Qual o nivel de dificuldade ?");
 
-        if (menu() == 1)
+        if (menu() == 1) {
             this.jogador1 = new Humano(1);
-        else
-            this.jogador1 = new Computador(1);
-
-        System.out.println("----------------------");
-        System.out.println("nome do jogador 2 [O]:");
-        nome2 = entrada.next();
-        System.out.println("Quem vai ser o Jogador 2 [O] ?");
-
-        if (menu() == 1)
-            this.jogador2 = new Humano(2);
-        else
             this.jogador2 = new Computador(2);
+        }else {
+            this.jogador1 = new Computador(1);
+            this.jogador2 = new Humano(2);
+        }
 
     }
 
@@ -53,13 +44,13 @@ public class Console {
         int opcao = 0;
         do {
             System.out.println(" ####### MENU #######  ");
-            System.out.println("1. Humano");
-            System.out.println("2. Computador");
+            System.out.println("1. Facil");
+            System.out.println("2. Medio");
             System.out.print("Opção: ");
             opcao = entrada.nextInt();
             if (opcao != 1 && opcao != 2)
                 System.out.println("Opção inválida! Tente novamente");
-        } while (opcao != 1 && opcao != 2);
+        } while (opcao ==0);
         return opcao;
     }
 
@@ -82,9 +73,9 @@ public class Console {
             return true;
         } else {
             if (vitoria() == -1)
-                System.out.println("O Jogador (X), " + nome1 + " ganhou!");
+                System.out.println("O Jogador (X), ganhou!");
             else
-                System.out.println("O Jogador (O)," + nome2 + " ganhou!");
+                System.out.println("O Jogador (O), ganhou!");
             return false;
         }
     }

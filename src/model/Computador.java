@@ -16,8 +16,8 @@ public class Computador extends Jogador {
     @Override
     public void Tentativa(Tabuleiro tabuleiro) {
         do {
-            tentativa[0] = 1 + (int) (3 * Math.random());
-            tentativa[1] = 1 + (int) (3 * Math.random());
+            tentativa[0] = (int) (Math.random() * 3) +1;
+            tentativa[1] = (int) (Math.random() * 3) +1;
             tentativa[0]--;
             tentativa[1]--;
         } while (!verificaTentativa(tentativa, tabuleiro));
