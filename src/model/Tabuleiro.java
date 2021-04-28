@@ -1,100 +1,195 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Tabuleiro {
-    private final int qtLinhas = 3;
-    private final int qtColunas = 3;
 
-    private int[][] tabuleiro = new int[3][3];
+    private String[][] mapa = new String[3][3];
+    private Jogador jogador;
+    private int valor = 0;
 
-    public Tabuleiro() {
-        gerarCampos();
+    private Tabuleiro pai;
+    private ArrayList<Tabuleiro> filhos = new ArrayList<Tabuleiro>();
+
+    public int getValor() {
+        return valor;
     }
 
-    private void gerarCampos() {
-        for (int i = 0; i < qtLinhas; i++) {
-            for (int j = 0; j < qtColunas; j++) {
-                tabuleiro[i][j] = 0;
-            }
-        }
+    public void setValor(int valor) {
+        this.valor = valor;
     }
 
-    public int getPosicao(int[] tentativa) {
-        return tabuleiro[tentativa[0]][tentativa[1]];
+    public Jogador getJogador() {
+        return jogador;
     }
 
-    public void setPosicao(int[] tentativa, int jogador) {
-        if (jogador == 1)
-            tabuleiro[tentativa[0]][tentativa[1]] = -1;
-        else
-            tabuleiro[tentativa[0]][tentativa[1]] = 1;
-
-        exbir();
+    public void setJogador(Jogador jogador) {
+        this.jogador = jogador;
     }
 
-    public int checaLinhas() {
-        for (int linha = 0; linha < 3; linha++) {
-            if ((tabuleiro[linha][0] + tabuleiro[linha][1] + tabuleiro[linha][2]) == -3)
-                return -1;
-            else if ((tabuleiro[linha][0] + tabuleiro[linha][1] + tabuleiro[linha][2]) == 3)
-                return 1;
-        }
-        return 0;
-
+    public String getXY(int linha, int coluna) {
+        return mapa[linha][coluna];
     }
 
-    public int checaColunas() {
-        for (int coluna = 0; coluna < 3; coluna++) {
-
-            if ((tabuleiro[0][coluna] + tabuleiro[1][coluna] + tabuleiro[2][coluna]) == -3)
-                return -1;
-            else if ((tabuleiro[0][coluna] + tabuleiro[1][coluna] + tabuleiro[2][coluna]) == 3)
-                return 1;
-        }
-
-        return 0;
-
+    public String[][] getMapa() {
+        return mapa;
     }
 
-    public int checaDiagonais() {
-        if ((tabuleiro[0][0] + tabuleiro[1][1] + tabuleiro[2][2]) == -3)
-            return -1;
-        else if ((tabuleiro[0][0] + tabuleiro[1][1] + tabuleiro[2][2]) == 3)
-            return 1;
-        else if ((tabuleiro[0][2] + tabuleiro[1][1] + tabuleiro[2][0]) == -3)
-            return -1;
-        else if ((tabuleiro[0][2] + tabuleiro[1][1] + tabuleiro[2][0]) == 3)
-            return 1;
-
-        return 0;
+    public void setX(int linha, int coluna) {
+        mapa[linha][coluna] = "X";
     }
 
-    public boolean tabuleiroCompleto() {
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                if (tabuleiro[i][j] == 0)
-                    return false;
-        return true;
+    public void setO(int linha, int coluna) {
+        mapa[linha][coluna] = "O";
     }
 
-    public void exbir() {
-        System.out.println();
+    private boolean verificaHorizontal(int linha) {
+        return ("O".equals(mapa[linha][0]) && "O".equals(mapa[linha][1]) && "O".equals(mapa[linha][2]));
+    }
+
+    private boolean verificaVertical(int coluna) {
+        return ("O".equals(mapa[0][coluna]) && "O".equals(mapa[1][coluna]) && "O".equals(mapa[2][coluna]));
+    }
+
+    private boolean verificaDiagonalPrincipal() {
+        return ("O".equals(mapa[0][0]) && "O".equals(mapa[1][1]) && "O".equals(mapa[2][2]));
+    }
+
+    private boolean verificaDiagonalSecundaria() {
+        return ("O".equals(mapa[0][2]) && "O".equals(mapa[1][1]) && "O".equals(mapa[2][0]));
+    }
+
+    private boolean verificaPerdeuHorizontal(int linha) {
+        return ("X".equals(mapa[linha][0]) && "X".equals(mapa[linha][1]) && "X".equals(mapa[linha][2]));
+    }
+
+    private boolean verificaPerdeuVertical(int coluna) {
+        return ("X".equals(mapa[0][coluna]) && "X".equals(mapa[1][coluna]) && "X".equals(mapa[2][coluna]));
+    }
+
+    private boolean verificaPerdeuDiagonalPrincipal() {
+        return ("X".equals(mapa[0][0]) && "X".equals(mapa[1][1]) && "X".equals(mapa[2][2]));
+    }
+
+    private boolean verificaPerdeuDiagonalSecundaria() {
+        return ("X".equals(mapa[0][2]) && "X".equals(mapa[1][1]) && "X".equals(mapa[2][0]));
+    }
+
+    public boolean empate() {
+        boolean empate = true;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (tabuleiro[i][j] == -1) {
-                    System.out.print(" X ");
+                if (mapa[i][j] == null) {
+                    empate = false;
+                    break;
                 }
-                else if (tabuleiro[i][j] == 1) {
-                    System.out.print(" O ");
-                }
-                else if (tabuleiro[i][j] == 0) {
-                    System.out.print("   ");
-                }
-                if (j == 0 || j == 1)
-                    System.out.print("|");
             }
-            System.out.println();
+        }
+
+        return empate && !ganhou();
+    }
+
+    public boolean perdeu() {
+        return (verificaPerdeuHorizontal(0)
+                || verificaPerdeuHorizontal(1)
+                || verificaPerdeuHorizontal(2)
+                || verificaPerdeuVertical(0)
+                || verificaPerdeuVertical(1)
+                || verificaPerdeuVertical(2)
+                || verificaPerdeuDiagonalPrincipal()
+                || verificaPerdeuDiagonalSecundaria());
+    }
+
+    public boolean ganhou() {
+        //return false;
+        return (verificaHorizontal(0)
+                || verificaHorizontal(1)
+                || verificaHorizontal(2)
+                || verificaVertical(0)
+                || verificaVertical(1)
+                || verificaVertical(2)
+                || verificaDiagonalPrincipal()
+                || verificaDiagonalSecundaria());
+    }
+
+    public boolean isTerminal() {
+        return ganhou() || empate() || perdeu();
+    }
+
+    public int getResultado() {
+        if (ganhou()) {
+            valor=1;
+            return 1;
+        } else {
+            if (perdeu()) {
+                valor=-1;
+                return -1;
+            } else {
+                return 0;
+            }
         }
     }
+
+    public void mostra() {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (j>=1)
+                    System.out.print("|");
+                if(mapa[i][j] == null){
+                    System.out.print("   ");
+                }else {
+                    System.out.print(" " + mapa[i][j]+ " ");
+                }
+            }
+            System.out.println("");
+        }
+    }
+
+    public ArrayList<Tabuleiro> getTodosFilhos(){
+        return filhos;
+    }
+
+    public ArrayList<Tabuleiro> getFilhos(Tabuleiro t) {
+        filhos = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                try {
+                    Tabuleiro filho = t.clone();
+                    if (filho.getXY(i, j) == null) {
+                        if (jogador.equals(Jogador.Max)) {
+                            filho.setO(i, j);
+                        } else {
+                            filho.setX(i, j);
+                        }
+                        filho.getResultado();
+                        filhos.add(filho);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return filhos;
+    }
+
+    @Override
+    protected Tabuleiro clone() throws CloneNotSupportedException {
+        Tabuleiro t = new Tabuleiro();
+        for (int i = 0; i < 3; i++) {
+            System.arraycopy(mapa[i], 0, t.getMapa()[i], 0, 3);
+        }
+        return t;
+    }
+
+    @Override
+    public String toString() {
+        String s = "[";
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                s+=mapa[i][j]+",";
+            }
+        }
+        return s+"]\n";
+    }
+
 }
-
-
