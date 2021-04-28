@@ -101,7 +101,6 @@ public class Tabuleiro {
     }
 
     public boolean ganhou() {
-        //return false;
         return (verificaHorizontal(0)
                 || verificaHorizontal(1)
                 || verificaHorizontal(2)
@@ -173,7 +172,7 @@ public class Tabuleiro {
     }
 
     @Override
-    protected Tabuleiro clone() throws CloneNotSupportedException {
+    protected Tabuleiro clone() {
         Tabuleiro t = new Tabuleiro();
         for (int i = 0; i < 3; i++) {
             System.arraycopy(mapa[i], 0, t.getMapa()[i], 0, 3);
